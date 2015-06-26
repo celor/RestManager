@@ -1,0 +1,23 @@
+[
+{
+"identifier":1,
+"name":"ACDC",
+"albums":[
+{
+"identifier":1,
+"name":"Let There Be Rock",
+"releaseDate":1977
+},
+{
+"identifier":2,
+"name":"Highway to Hell",
+"releaseDate":"1979-11"
+},
+{
+"identifier":3,
+"name":"Back in Black",
+"releaseDate":"1980"
+}
+]
+}
+]
