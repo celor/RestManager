@@ -44,10 +44,10 @@
     return keys[key]?:key;
 }
 
-+(NSString *)JSONKeyForPropertyKey:(NSString *)key
++(NSArray *)JSONKeyForPropertyKey:(NSString *)key
 {
     NSDictionary *keys = [self keysForJSONKeys];
-    return [[keys allKeysForObject:key] firstObject]?:key;
+    return [keys allKeysForObject:key]?[@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]]:@[key];
 }
 
 +(NSString *)identifierKey
@@ -117,7 +117,7 @@
     NSRelationshipDescription *relationship = self.entity.relationshipsByName[relationKey];
     id formattedValue = nil;
     if (![value isKindOfClass:relationship.destinationEntity.class]) {
-        NSSet *set = [relationship.destinationEntity insertObjectsFromJSONObject:value inContext:self.managedObjectContext];
+        NSSet *set = [relationship.destinationEntity insertObjectsFromJSONObject:value inContext:self.managedObjectContext ];
         if (relationship.toMany) {
             formattedValue = set;
         }

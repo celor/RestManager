@@ -37,7 +37,7 @@
     return [NSClassFromString(self.managedObjectClassName) propertyKeyForJSONKey:key];
 }
 
--(NSString *)JSONKeyForPropertyKey:(NSString *)key
+-(NSArray *)JSONKeyForPropertyKey:(NSString *)key
 {
     return [NSClassFromString(self.managedObjectClassName) JSONKeyForPropertyKey:key];
 }
@@ -64,7 +64,12 @@
 -(NSManagedObject *)insertObjectFromDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)managedObjectContext {
     NSString *identifierKey = [self identifierKey];
     NSAssert(identifierKey!=nil, @"You need specify an identifier key to %@ entity.",self.name);
-    NSString *identifier = dictionary[[self JSONKeyForPropertyKey:identifierKey]];
+    NSArray *JSONKeys = [self JSONKeyForPropertyKey:identifierKey];
+    __block NSString *identifier = nil;
+    [JSONKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        identifier = dictionary[obj];
+        if (identifier) *stop = YES;
+    }];
     NSAssert(identifier!=nil, @"Your dictionary need contain the identifier key %@ and it contain only keys %@.",identifierKey,[dictionary.allKeys componentsJoinedByString:@","]);
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:self.name];

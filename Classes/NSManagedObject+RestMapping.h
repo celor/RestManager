@@ -33,7 +33,7 @@
 
 +(NSString *)propertyKeyForJSONKey:(NSString *)key;
 
-+(NSString *)JSONKeyForPropertyKey:(NSString *)key;
++(NSArray *)JSONKeyForPropertyKey:(NSString *)key;
 
 +(NSDictionary *)keysForJSONKeys;
 

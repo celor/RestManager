@@ -27,6 +27,10 @@
 		0D91A8551B3D73DC00511B2D /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D91A8541B3D73DC00511B2D /* ISO8601DateFormatter.m */; };
 		0D91A8561B3D75CF00511B2D /* TestRestManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0D91A7E41B3D5EFE00511B2D /* TestRestManager.xcdatamodeld */; };
 		0D91A8591B3D774000511B2D /* artists in Resources */ = {isa = PBXBuildFile; fileRef = 0D91A8581B3D774000511B2D /* artists */; };
+		0DABD6F41B85DD4E00C53F0B /* TestRORClientRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DABD6F31B85DD4E00C53F0B /* TestRORClientRestManager.m */; };
+		0DABD6F71B85E0A000C53F0B /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DABD6F61B85E0A000C53F0B /* Artist.m */; };
+		0DABD6FA1B85E0A000C53F0B /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DABD6F91B85E0A000C53F0B /* Track.m */; };
+		0DABD6FD1B85E0A000C53F0B /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DABD6FC1B85E0A000C53F0B /* Album.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +95,13 @@
 		0D91A8531B3D73DC00511B2D /* ISO8601DateFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO8601DateFormatter.h; sourceTree = "<group>"; };
 		0D91A8541B3D73DC00511B2D /* ISO8601DateFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISO8601DateFormatter.m; sourceTree = "<group>"; };
 		0D91A8581B3D774000511B2D /* artists */ = {isa = PBXFileReference; explicitFileType = text.json; fileEncoding = 4; path = artists; sourceTree = "<group>"; };
+		0DABD6F31B85DD4E00C53F0B /* TestRORClientRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestRORClientRestManager.m; sourceTree = "<group>"; };
+		0DABD6F51B85E0A000C53F0B /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
+		0DABD6F61B85E0A000C53F0B /* Artist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Artist.m; sourceTree = "<group>"; };
+		0DABD6F81B85E0A000C53F0B /* Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Track.h; sourceTree = "<group>"; };
+		0DABD6F91B85E0A000C53F0B /* Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Track.m; sourceTree = "<group>"; };
+		0DABD6FB1B85E0A000C53F0B /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
+		0DABD6FC1B85E0A000C53F0B /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Album.m; sourceTree = "<group>"; };
 		4190783F5EA9DF1694D04163 /* libPods-RestManagerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RestManagerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90EEDD25C1EB704D48C7CEDD /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E143D26E70B1EA48364E6A58 /* libPods-RestManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RestManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,8 +150,15 @@
 		0D91A78B1B3D517B00511B2D /* RestManagerTests */ = {
 			isa = PBXGroup;
 			children = (
+				0DABD6FB1B85E0A000C53F0B /* Album.h */,
+				0DABD6FC1B85E0A000C53F0B /* Album.m */,
+				0DABD6F81B85E0A000C53F0B /* Track.h */,
+				0DABD6F91B85E0A000C53F0B /* Track.m */,
+				0DABD6F51B85E0A000C53F0B /* Artist.h */,
+				0DABD6F61B85E0A000C53F0B /* Artist.m */,
 				0D91A78C1B3D517B00511B2D /* Supporting Files */,
 				0D91A7BD1B3D578B00511B2D /* TestRestManager.m */,
+				0DABD6F31B85DD4E00C53F0B /* TestRORClientRestManager.m */,
 				0D91A7BF1B3D57EF00511B2D /* CoreDataManager.h */,
 				0D91A7C01B3D57EF00511B2D /* CoreDataManager.m */,
 				0D91A7E41B3D5EFE00511B2D /* TestRestManager.xcdatamodeld */,
@@ -349,9 +367,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DABD6FA1B85E0A000C53F0B /* Track.m in Sources */,
 				0D91A8551B3D73DC00511B2D /* ISO8601DateFormatter.m in Sources */,
 				0D91A8561B3D75CF00511B2D /* TestRestManager.xcdatamodeld in Sources */,
+				0DABD6FD1B85E0A000C53F0B /* Album.m in Sources */,
 				0D91A7C11B3D57EF00511B2D /* CoreDataManager.m in Sources */,
+				0DABD6F41B85DD4E00C53F0B /* TestRORClientRestManager.m in Sources */,
+				0DABD6F71B85E0A000C53F0B /* Artist.m in Sources */,
 				0D91A7BE1B3D578B00511B2D /* TestRestManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
