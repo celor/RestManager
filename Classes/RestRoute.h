@@ -47,6 +47,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSString *pattern;
 @property (nonatomic, strong) NSDictionary *routeParameters;
 @property (nonatomic, strong) NSString *baseEntityName;
+@property (nonatomic, strong) NSDictionary *subroutes;
 
 -(NSString *)routeURLWithObject:(id)object;
 

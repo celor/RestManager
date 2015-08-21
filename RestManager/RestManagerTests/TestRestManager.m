@@ -48,8 +48,10 @@ static NSString *const artists = @"artists";
     _manager = [CoreDataManager new];
     _restManager = [[RestManager alloc] initWithBaseURL:[NSBundle bundleForClass:self.class].resourceURL andMainManagedObjectContext:_manager.managedObjectContext];
     
-    RestRoute *artistsRoute = [RestRoute localRestRouteWithPattern:artists andBaseEntityName:@"Artist"];
-    [_restManager addRestRoute:artistsRoute withIdentifier:artists];
+    RestRoute *artistsRoute = [RestRoute localRestRouteWithPattern:nil andBaseEntityName:@"Artist"];
+    RestRoute *jsonRoute = [RestRoute localRestRouteWithPattern:artists andBaseEntityName:nil];
+    jsonRoute.subroutes = @{@"list":artistsRoute};
+    [_restManager addRestRoute:jsonRoute withIdentifier:artists];
 }
 
 - (void)tearDown {
@@ -69,9 +71,10 @@ static NSString *const artists = @"artists";
         
         XCTAssertEqual(routeIdentifier, artists, @"The route identifier is different");
         
-        XCTAssertEqual(routeBaseObjects.count, 1,@"Need have one artists");
+        XCTAssertEqual(routeBaseObjects.count, 2,@"Need have one artists");
+        NSPredicate *acdcPredicate = [NSPredicate predicateWithFormat:@"name = %@",@"ACDC"];
         
-        id acdc = [[routeBaseObjects allObjects] firstObject];
+        id acdc = [[[routeBaseObjects allObjects] filteredArrayUsingPredicate:acdcPredicate] firstObject];
         
         XCTAssertEqual([[acdc valueForKeyPath:@"identifier"] intValue],
                        1,
@@ -85,7 +88,7 @@ static NSString *const artists = @"artists";
                        @"The first artist have 3 album registered");
         
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Artist"];
-        
+        [fetchRequest setPredicate:acdcPredicate];
         NSArray *artists = [_manager.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         
         id managedContextAcdc = [artists firstObject];

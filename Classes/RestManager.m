@@ -94,6 +94,26 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
     [_restRoutes setObject:route forKey:routeIdentifier];
 }
 
+-(NSSet *)parseJsonObject:(id)jsonObject forRoute:(RestRoute *)route inContext:(NSManagedObjectContext *)importContext {
+    if ([route subroutes]) {
+        __block NSMutableSet *result = [NSMutableSet set];
+        
+        __weak typeof(self)weakSelf = self;
+        
+        [[route subroutes] enumerateKeysAndObjectsUsingBlock:^(id key, RestRoute *obj, BOOL *stop) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            [result addObjectsFromArray:[[strongSelf parseJsonObject:jsonObject[key] forRoute:obj inContext:importContext] allObjects]];
+        }];
+        return result;
+    }
+    if (route.baseEntityName && jsonObject) {
+        NSEntityDescription *baseEntity = [NSEntityDescription entityForName:route.baseEntityName inManagedObjectContext:importContext];
+        
+        return [baseEntity insertObjectsFromJSONObject:jsonObject inContext:importContext];
+    }
+    return nil;
+}
+
 -(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
                        forObject:(id)object
               withCallParameters:(NSDictionary *)callParameters
@@ -122,11 +142,26 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             importContext.persistentStoreCoordinator = _mainManagedObjectContext.persistentStoreCoordinator;
             importContext.mergePolicy = NSOverwriteMergePolicy;
             
+            
             [importContext performBlock:^{
-                NSEntityDescription *baseEntity = [NSEntityDescription entityForName:route.baseEntityName inManagedObjectContext:importContext];
                 
-                NSSet *routeBaseObjects = [baseEntity insertObjectsFromJSONObject:jsonObject inContext:importContext];
+                NSSet *(^routeParsing)(RestRoute*,id) = ^NSSet *(RestRoute *parseRoute,id routeJsonObject) {
+                    if (!routeJsonObject) return nil;
+                    NSEntityDescription *baseEntity = [NSEntityDescription entityForName:parseRoute.baseEntityName inManagedObjectContext:importContext];
+                    
+                    return [baseEntity insertObjectsFromJSONObject:routeJsonObject inContext:importContext];
+                };
                 
+                NSMutableSet *routeBaseObjects = [NSMutableSet new];
+                if ([route subroutes]) {
+                    [[route subroutes] enumerateKeysAndObjectsUsingBlock:^(id key, RestRoute *obj, BOOL *stop) {
+                        [routeBaseObjects addObjectsFromArray:[routeParsing(obj, jsonObject[key]) allObjects]];
+                    }];
+                }
+                else {
+                    [routeBaseObjects addObjectsFromArray:[routeParsing(route, jsonObject) allObjects]];
+                }
+                NSString *routeBaseObject = [self parseJsonObject:jsonObject forRoute:route inContext:importContext];
                 NSError *error = [importContext deleteOrphanedAndSave];
                 
                 if (completionBlock) {
