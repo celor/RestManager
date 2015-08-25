@@ -140,28 +140,10 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             
             NSManagedObjectContext *importContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
             importContext.persistentStoreCoordinator = _mainManagedObjectContext.persistentStoreCoordinator;
-            importContext.mergePolicy = NSOverwriteMergePolicy;
-            
+            importContext.mergePolicy = NSOverwriteMergePolicy;            
             
             [importContext performBlock:^{
-                
-                NSSet *(^routeParsing)(RestRoute*,id) = ^NSSet *(RestRoute *parseRoute,id routeJsonObject) {
-                    if (!routeJsonObject) return nil;
-                    NSEntityDescription *baseEntity = [NSEntityDescription entityForName:parseRoute.baseEntityName inManagedObjectContext:importContext];
-                    
-                    return [baseEntity insertObjectsFromJSONObject:routeJsonObject inContext:importContext];
-                };
-                
-                NSMutableSet *routeBaseObjects = [NSMutableSet new];
-                if ([route subroutes]) {
-                    [[route subroutes] enumerateKeysAndObjectsUsingBlock:^(id key, RestRoute *obj, BOOL *stop) {
-                        [routeBaseObjects addObjectsFromArray:[routeParsing(obj, jsonObject[key]) allObjects]];
-                    }];
-                }
-                else {
-                    [routeBaseObjects addObjectsFromArray:[routeParsing(route, jsonObject) allObjects]];
-                }
-                NSString *routeBaseObject = [self parseJsonObject:jsonObject forRoute:route inContext:importContext];
+                NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:importContext];
                 NSError *error = [importContext deleteOrphanedAndSave];
                 
                 if (completionBlock) {
