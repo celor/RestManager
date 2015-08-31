@@ -38,15 +38,25 @@
     return nil;
 }
 
++(NSDictionary *)managedKeysForJSONKeys {
+    NSDictionary *keys = [self keysForJSONKeys];
+    if ([self respondsToSelector:@selector(globalKeysForJSONKeys)]) {
+        NSMutableDictionary *mKeys = [self performSelector:@selector(globalKeysForJSONKeys)];
+        [mKeys addEntriesFromDictionary:keys];
+        keys = [mKeys copy];
+    }
+    return keys;
+}
+
 +(NSString *)propertyKeyForJSONKey:(NSString *)key
 {
-    NSDictionary *keys = [self keysForJSONKeys];
+    NSDictionary *keys = [self managedKeysForJSONKeys];
     return keys[key]?:key;
 }
 
 +(NSArray *)JSONKeyForPropertyKey:(NSString *)key
 {
-    NSDictionary *keys = [self keysForJSONKeys];
+    NSDictionary *keys = [self managedKeysForJSONKeys];
     return [keys allKeysForObject:key]?[@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]]:@[key];
 }
 
