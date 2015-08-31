@@ -93,6 +93,9 @@
     else if ([jsonObject isKindOfClass:[NSDictionary class]]){
         [set addObject:[self insertObjectFromDictionary:jsonObject inContext:managedObjectContext]];
     }
+    else if ([jsonObject isKindOfClass:[NSNull class]]) {
+        [set addObject:jsonObject];
+    }
     else {
         NSAssert(false, @"%@ need be an NSArray or an NSDictionary. Verify your mapping.",jsonObject);
     }

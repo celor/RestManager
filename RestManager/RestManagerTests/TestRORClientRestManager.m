@@ -58,7 +58,7 @@ static NSString *const artists = @"artists";
     _restManager = [[RestManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://localhost:3000"] andMainManagedObjectContext:_manager.managedObjectContext];
     
     
-    RestRoute *artistsRoute = [RestRoute localRestRouteWithPattern:artists andBaseEntityName:@"Artist"];
+    RestRoute *artistsRoute = [RestRoute httpRestRouteWithPattern:artists baseEntityName:@"Artist" andHTTPMethod:RestHTTPMethodGET];
     [_restManager addRestRoute:artistsRoute withIdentifier:artists];
 }
 
