@@ -62,11 +62,6 @@
     return [keys allKeysForObject:key]?[@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]]:@[key];
 }
 
-+(NSString *)identifierKey
-{
-    return nil;
-}
-
 +(NSPredicate *)orphanedPredicate
 {
     return nil;

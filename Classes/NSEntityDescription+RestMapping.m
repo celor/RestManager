@@ -44,8 +44,11 @@
 
 -(NSString *)identifierKey
 {
-    __block NSString *identifierKey = [NSClassFromString(self.managedObjectClassName) identifierKey];
+    __block NSString *identifierKey = nil;
     
+    if ([NSClassFromString(self.managedObjectClassName) respondsToSelector:@selector(identifierKey)]) {
+        [NSClassFromString(self.managedObjectClassName) identifierKey];
+    }
     if (!identifierKey) {
         [self.attributesByName enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSAttributeDescription *obj, BOOL *stop) {
             if ([name.lowercaseString isEqualToString:@"identifier"]) {
