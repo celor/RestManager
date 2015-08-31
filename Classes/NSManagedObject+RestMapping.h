@@ -37,6 +37,8 @@
 
 +(NSDictionary *)keysForJSONKeys;
 
++(NSString *)identifierKey;
+
 -(NSDate *)dateFromString:(NSString *)stringDate forPropertyNamed:(NSString *)propertyName;
 
 -(id)formattedValueForAttributeKey:(NSString *)attributeKey withJSONValue:(id)value;

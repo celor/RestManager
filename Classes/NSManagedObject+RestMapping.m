@@ -38,28 +38,21 @@
     return nil;
 }
 
-+(NSDictionary *)managedKeysForJSONKeys {
-    NSDictionary *keys = [self keysForJSONKeys];
-    if ([self respondsToSelector:@selector(globalKeysForJSONKeys)]) {
-        NSMutableDictionary *mKeys = [[self performSelector:@selector(globalKeysForJSONKeys)] mutableCopy];
-        if (keys) {
-            [mKeys addEntriesFromDictionary:keys];
-        }
-        keys = [mKeys copy];
-    }
-    return keys;
-}
-
 +(NSString *)propertyKeyForJSONKey:(NSString *)key
 {
-    NSDictionary *keys = [self managedKeysForJSONKeys];
+    NSDictionary *keys = [self keysForJSONKeys];
     return keys[key]?:key;
 }
 
 +(NSArray *)JSONKeyForPropertyKey:(NSString *)key
 {
-    NSDictionary *keys = [self managedKeysForJSONKeys];
+    NSDictionary *keys = [self keysForJSONKeys];
     return [keys allKeysForObject:key]?[@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]]:@[key];
+}
+
++(NSString *)identifierKey
+{
+    return nil;
 }
 
 +(NSPredicate *)orphanedPredicate
