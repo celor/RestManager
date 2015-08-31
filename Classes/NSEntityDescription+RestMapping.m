@@ -54,9 +54,6 @@
             if ([name.lowercaseString isEqualToString:@"identifier"]) {
                 identifierKey = name;
             }
-            else if([name.lowercaseString hasSuffix:@"id"]) {
-                identifierKey = name;
-            }
         }];
     }
     
