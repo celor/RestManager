@@ -41,8 +41,10 @@
 +(NSDictionary *)managedKeysForJSONKeys {
     NSDictionary *keys = [self keysForJSONKeys];
     if ([self respondsToSelector:@selector(globalKeysForJSONKeys)]) {
-        NSMutableDictionary *mKeys = [self performSelector:@selector(globalKeysForJSONKeys)];
-        [mKeys addEntriesFromDictionary:keys];
+        NSMutableDictionary *mKeys = [[self performSelector:@selector(globalKeysForJSONKeys)] mutableCopy];
+        if (keys) {
+            [mKeys addEntriesFromDictionary:keys];
+        }
         keys = [mKeys copy];
     }
     return keys;
