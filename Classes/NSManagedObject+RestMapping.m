@@ -31,6 +31,7 @@
 #import "NSEntityDescription+RestMapping.h"
 #import "ISO8601DateFormatter.h"
 
+
 @implementation NSManagedObject (RestMapping)
 
 +(NSDictionary *)keysForJSONKeys
@@ -131,20 +132,51 @@
     return formattedValue;
 }
 
--(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues {
+-(id)formattedValuesForUnknownKey:(NSString *)unknownKey withJSONValue:(id)value
+{
+    if ([value isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
+        [value enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            NSString *newKey = [@[unknownKey,key] componentsJoinedByString:@"."];
+            [propertyKeyedValues setValuesForKeysWithDictionary:[self formattedValueForKey:newKey withJSONValue:obj]];
+        }];
+    }
+    return nil;
+}
+
+-(id)formattedValueForKey:(NSString *)key withJSONValue:(id)value {
+    
     NSArray *relationshipsKeys = [self.entity.relationshipsByName allKeys];
     NSArray *attributesKeys = [self.entity.attributesByName allKeys];
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     
+    NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
+    if ([relationshipsKeys containsObject:propertyKey]) {
+        [propertyKeyedValues setObject:[self formattedValueForRelationKey:propertyKey withJSONValue:value] forKey:propertyKey];
+    }
+    else if ([attributesKeys containsObject:propertyKey]){
+        [propertyKeyedValues setObject:[self formattedValueForAttributeKey:propertyKey withJSONValue:value] forKey:propertyKey];
+    }
+    else {
+        id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
+        if (newValues) {
+            [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
+        }
+        else {
+            NSLog(@"Unknown %@ - %@",propertyKey,value);
+        }
+    }
+    return propertyKeyedValues;
+}
+
+
+         
+         
+-(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues {
+    NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     [keyedValues enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
-        NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
-        if ([relationshipsKeys containsObject:propertyKey]) {
-            [propertyKeyedValues setObject:[self formattedValueForRelationKey:propertyKey withJSONValue:obj] forKey:propertyKey];
-        }
-        else if ([attributesKeys containsObject:propertyKey]){
-            [propertyKeyedValues setObject:[self formattedValueForAttributeKey:propertyKey withJSONValue:obj] forKey:propertyKey];
-        }
+        [propertyKeyedValues setValuesForKeysWithDictionary:[self formattedValueForKey:key withJSONValue:obj]];
     }];
-    [self setValuesForKeysWithDictionary:propertyKeyedValues];
+    [self setValuesForKeysWithDictionary:propertyKeyedValues.copy];
 }
 @end

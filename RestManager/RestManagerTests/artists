@@ -3,6 +3,11 @@
             {
             "identifier":1,
             "name":"ACDC",
+            "object":{
+            "subobject":{
+            "thirdobject":0
+            }
+            },
             "albums":[
                       {
                       "identifier":1,
