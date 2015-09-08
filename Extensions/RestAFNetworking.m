@@ -30,7 +30,14 @@
 #import "RestAFNetworking.h"
 
 @implementation RestAFNetworking
-
+- (instancetype)initWithBaseURL:(NSURL *)url
+{
+    self = [super initWithBaseURL:url];
+    if (self) {
+        self.requestSerializer = [AFJSONRequestSerializer new];
+    }
+    return self;
+}
 -(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters andCompletionBlock:(APICallCompletionBlock)completionBlock
 {
     void(^successBlock)(NSURLSessionDataTask *, id) = ^(NSURLSessionDataTask *task, id responseObject) {
