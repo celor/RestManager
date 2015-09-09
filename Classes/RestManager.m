@@ -145,9 +145,6 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             [importContext performBlock:^{
                 NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:importContext];
                 NSError *error = [importContext deleteOrphanedAndSave];
-                if (!error) {
-                    [_mainManagedObjectContext save:&error];
-                }
                 NSMutableSet *routeObjects = [NSMutableSet new];
                 
                 [routeBaseObjects enumerateObjectsUsingBlock:^(NSManagedObject *obj, BOOL *stop) {
