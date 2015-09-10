@@ -75,7 +75,7 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
 
 @implementation RestManager
 
--(instancetype)initWithBaseURL:(NSURL *)baseURL mainManagedObjectContext:(NSManagedObjectContext *)mainManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
+-(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
 {
     self = [super init];
     if (self) {
@@ -83,7 +83,7 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
         _baseURL = baseURL;
         _networkingDelegate = [[networkingDelegateClass alloc] initWithBaseURL:baseURL];
         _globalParameters = nil;
-        _mainManagedObjectContext = mainManagedObjectContext;
+        _networkManagedObjectContext = networkManagedObjectContext;
         _restRoutes = [NSMutableDictionary new];
     }
     return self;
@@ -119,7 +119,7 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
               withCallParameters:(NSDictionary *)callParameters
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock
 {
-    NSAssert(_mainManagedObjectContext!=nil, @"Rest Manager need a mainManagedObjectContext to make the mapping");
+    NSAssert(_networkManagedObjectContext!=nil, @"Rest Manager need a mainManagedObjectContext to make the mapping");
     
     RestRoute *route = _restRoutes[routeIdentifier];
     NSAssert(route!=nil, @"No route added for identifier %@",routeIdentifier);
@@ -137,22 +137,12 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             if (completionBlock) completionBlock(routeIdentifier,nil,error);
         }
         else if(jsonObject) {
-            
-            NSManagedObjectContext *importContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-            importContext.persistentStoreCoordinator = _mainManagedObjectContext.persistentStoreCoordinator;
-            importContext.mergePolicy = NSOverwriteMergePolicy;            
-            
-            [importContext performBlock:^{
-                NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:importContext];
-                NSError *error = [importContext deleteOrphanedAndSave];
-                NSMutableSet *routeObjects = [NSMutableSet new];
-                
-                [routeBaseObjects enumerateObjectsUsingBlock:^(NSManagedObject *obj, BOOL *stop) {
-                    [routeObjects addObject:[_mainManagedObjectContext objectWithID:obj.objectID]];
-                }];
+            [_networkManagedObjectContext performBlock:^{
+                NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
+                NSError *error = [_networkManagedObjectContext deleteOrphanedAndSave];
                 
                 if (completionBlock) {
-                    completionBlock(routeIdentifier,routeObjects,error);
+                    completionBlock(routeIdentifier,routeBaseObjects,error);
                 }
             }];
         }

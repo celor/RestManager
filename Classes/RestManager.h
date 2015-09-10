@@ -41,7 +41,7 @@ typedef enum : NSUInteger {
 @protocol RestNetworkingDelegate;
 @interface RestManager : NSObject
 
-@property (nonatomic,weak) NSManagedObjectContext *mainManagedObjectContext;
+@property (nonatomic,weak) NSManagedObjectContext *networkManagedObjectContext;
 
 @property (nonatomic,strong) NSDictionary *globalParameters;
 
@@ -57,7 +57,7 @@ typedef enum : NSUInteger {
  *
  *  @return A RestManager
  */
--(instancetype)initWithBaseURL:(NSURL *)baseURL mainManagedObjectContext:(NSManagedObjectContext *)mainManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass;
+-(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass;
 
 -(void)addRestRoute:(RestRoute *)route withIdentifier:(id<NSCopying>)routeIdentifier;
 
