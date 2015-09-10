@@ -85,9 +85,9 @@
 
 @implementation RestManager (RestAFNetworking)
 
-- (instancetype)initWithBaseURL:(NSURL *)baseURL andMainManagedObjectContext:(NSManagedObjectContext *)mainManagedObjectContext
+- (instancetype)initWithBaseURL:(NSURL *)baseURL andNetworkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext
 {
-    return [self initWithBaseURL:baseURL mainManagedObjectContext:mainManagedObjectContext andNetworkingDelegateClass:[RestAFNetworking class]];
+    return [self initWithBaseURL:baseURL networkManagedObjectContext:networkManagedObjectContext andNetworkingDelegateClass:[RestAFNetworking class]];
 }
 
 -(RestAFNetworking *)afNetworkingDelegate

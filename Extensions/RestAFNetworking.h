@@ -44,7 +44,7 @@
  *
  *  @return A RestManager
  */
-- (instancetype)initWithBaseURL:(NSURL *)baseURL andMainManagedObjectContext:(NSManagedObjectContext *)mainManagedObjectContext;
+- (instancetype)initWithBaseURL:(NSURL *)baseURL andNetworkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext;
 
 /**
  *  Get a cast of the networkingDelegate matching with RestAFNetworking
