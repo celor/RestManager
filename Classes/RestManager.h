@@ -40,6 +40,7 @@
 typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error);
 
 typedef enum : NSUInteger {
+    RMLogNone,
     RMLogLevelInfo,
     RMLogLevelError,
     RMLogLevelFull,
