@@ -32,10 +32,10 @@
 #import "RestRoute.h"
 #import "NSManagedObject+RestMapping.h"
 #import "NSEntityDescription+RestMapping.h"
-#define _RMLog(...) printf("------------\nREST MANAGER | %s\n------------\n",[[NSString stringWithFormat:__VA_ARGS__] UTF8String])
-#define RMILog(...) if([RestManager logLevel] >= RMLogLevelInfo) _RMLog(__VA_ARGS__)
-#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelError) _RMLog(__VA_ARGS__)
-#define RMELog(...) if([RestManager logLevel] >= RMLogLevelFull) _RMLog(__VA_ARGS__)
+
+#define RMILog(...) if([RestManager logLevel] >= RMLogLevelInfo) NSLog(__VA_ARGS__)
+#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelError) NSLog(__VA_ARGS__)
+#define RMELog(...) if([RestManager logLevel] >= RMLogLevelFull) NSLog(__VA_ARGS__)
 
 typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error);
 

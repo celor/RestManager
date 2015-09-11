@@ -55,7 +55,7 @@ static NSString *const artists = @"artists";
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     _manager = [CoreDataManager new];
-    _restManager = [[RestManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://localhost:3000"] andMainManagedObjectContext:_manager.managedObjectContext];
+    _restManager = [[RestManager alloc] initWithBaseURL:[NSURL URLWithString:@"http://localhost:3000"] andNetworkManagedObjectContext:_manager.managedObjectContext];
     
     
     RestRoute *artistsRoute = [RestRoute httpRestRouteWithPattern:artists baseEntityName:@"Artist" andHTTPMethod:RestHTTPMethodGET];
