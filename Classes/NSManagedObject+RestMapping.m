@@ -152,12 +152,12 @@
     if ([relationshipsKeys containsObject:propertyKey]) {
         id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
         [propertyKeyedValues setObject:object forKey:propertyKey];
-        RMLog(@"New relation %@(%@) value %@",propertyKey,key,object);
+        RMFLog(@"New relation %@(%@) value %@",propertyKey,key,object);
     }
     else if ([attributesKeys containsObject:propertyKey]){
         id object = [self formattedValueForAttributeKey:propertyKey withJSONValue:value];
         [propertyKeyedValues setObject:object forKey:propertyKey];
-        RMLog(@"New attribute %@(%@) value %@",propertyKey,key,object);
+        RMFLog(@"New attribute %@(%@) value %@",propertyKey,key,object);
     }
     else {
         id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
@@ -165,7 +165,7 @@
             [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
         }
         else {
-            RMLog(@"Unknown %@(%@) - %@",propertyKey,key,value);
+            RMELog(@"Unknown %@(%@) - %@",propertyKey,key,value);
         }
     }
     return propertyKeyedValues;

@@ -72,15 +72,16 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
 
 @implementation RestManager
 
-static NSNumber *sLogEnabled = nil;
+static NSNumber *sLogLevel = nil;
 
-+(BOOL)logEnabled {
-    return [sLogEnabled boolValue];
++(RMLogLevel)logLevel {
+    if (!sLogLevel) {
+        sLogLevel = @0;
+    }
+    return [sLogLevel intValue];
 }
-
-+(void)setLogEnabled:(BOOL)enabled
-{
-    sLogEnabled = @(enabled);
++(void)setLogLevel:(RMLogLevel)logLevel {
+    sLogLevel = @(logLevel);
 }
 
 -(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
