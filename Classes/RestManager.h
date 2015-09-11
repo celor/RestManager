@@ -33,9 +33,9 @@
 #import "NSManagedObject+RestMapping.h"
 #import "NSEntityDescription+RestMapping.h"
 
-#define RMLog(...) if([RestManager logLevel] >= RMLogLevelInfo) printf("REST MANAGER | %s",[NSString stringWithFormat:__VA_ARGS__])
-#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelError) NSLog(__VA_ARGS__)
-#define RMELog(...) if([RestManager logLevel] >= RMLogLevelFull) NSLog(__VA_ARGS__)
+#define RMLog(...) if([RestManager logLevel] >= RMLogLevelInfo) printf("REST MANAGER INFO | %s",[[NSString stringWithFormat:__VA_ARGS__] UTF8String])
+#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelError) printf("REST MANAGER WARNING | %s",[[NSString stringWithFormat:__VA_ARGS__] UTF8String])
+#define RMELog(...) if([RestManager logLevel] >= RMLogLevelFull) printf("REST MANAGER | %s",[[NSString stringWithFormat:__VA_ARGS__] UTF8String])
 
 typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error);
 
