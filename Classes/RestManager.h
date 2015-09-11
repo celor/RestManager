@@ -30,6 +30,10 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "RestRoute.h"
+#import "NSManagedObject+RestMapping.h"
+#import "NSEntityDescription+RestMapping.h"
+
+#define RMLog(...) if([RestManager logEnabled]) NSLog(__VA_ARGS__)
 
 typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error);
 
@@ -46,6 +50,10 @@ typedef enum : NSUInteger {
 @property (nonatomic,strong) NSDictionary *globalParameters;
 
 @property (nonatomic,readonly,strong) id <RestNetworkingDelegate> networkingDelegate;
+
++(void)setLogEnabled:(BOOL)enabled;
++(BOOL)logEnabled;
+
 
 
 /**

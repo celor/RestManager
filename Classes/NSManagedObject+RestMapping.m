@@ -27,10 +27,8 @@
 //  SOFTWARE.
 //
 
-#import "NSManagedObject+RestMapping.h"
-#import "NSEntityDescription+RestMapping.h"
 #import "ISO8601DateFormatter.h"
-
+#import "RestManager.h"
 
 @implementation NSManagedObject (RestMapping)
 
@@ -152,10 +150,14 @@
     
     NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
     if ([relationshipsKeys containsObject:propertyKey]) {
-        [propertyKeyedValues setObject:[self formattedValueForRelationKey:propertyKey withJSONValue:value] forKey:propertyKey];
+        id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
+        [propertyKeyedValues setObject:object forKey:propertyKey];
+        RMLog(@"New relation %@(%@) value %@",propertyKey,key,object);
     }
     else if ([attributesKeys containsObject:propertyKey]){
-        [propertyKeyedValues setObject:[self formattedValueForAttributeKey:propertyKey withJSONValue:value] forKey:propertyKey];
+        id object = [self formattedValueForAttributeKey:propertyKey withJSONValue:value];
+        [propertyKeyedValues setObject:object forKey:propertyKey];
+        RMLog(@"New attribute %@(%@) value %@",propertyKey,key,object);
     }
     else {
         id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
@@ -163,7 +165,7 @@
             [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
         }
         else {
-            NSLog(@"Unknown %@ - %@",propertyKey,value);
+            RMLog(@"Unknown %@(%@) - %@",propertyKey,key,value);
         }
     }
     return propertyKeyedValues;

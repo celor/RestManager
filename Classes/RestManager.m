@@ -29,9 +29,6 @@
 
 #import "RestManager.h"
 
-#import "NSManagedObject+RestMapping.h"
-#import "NSEntityDescription+RestMapping.h"
-
 
 @implementation NSManagedObjectContext (Parsing)
 
@@ -74,6 +71,17 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
 @end
 
 @implementation RestManager
+
+static NSNumber *sLogEnabled = nil;
+
++(BOOL)logEnabled {
+    return [sLogEnabled boolValue];
+}
+
++(void)setLogEnabled:(BOOL)enabled
+{
+    sLogEnabled = @(enabled);
+}
 
 -(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
 {
@@ -132,7 +140,11 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
     
     if (parameters.count == 0) parameters = nil;
     
+    NSString *routeURL = [route routeURLWithObject:object];
+    NSTimeInterval startInterval = [NSDate timeIntervalSinceReferenceDate];
+    
     APICallCompletionBlock successBlock = ^(id jsonObject, NSError *error) {
+        NSTimeInterval resultInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
         if (error) {
             if (completionBlock) completionBlock(routeIdentifier,nil,error);
         }
@@ -140,7 +152,8 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             [_networkManagedObjectContext performBlock:^{
                 NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
                 NSError *error = [_networkManagedObjectContext deleteOrphanedAndSave];
-                
+                NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
+                RMLog(@"Result for route : %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
                 if (completionBlock) {
                     completionBlock(routeIdentifier,routeBaseObjects,error);
                 }
@@ -150,11 +163,11 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
             error = [NSError errorWithDomain:RestManagerErrorDomain.copy code:RestManagerNilJSONObjectError userInfo:@{}];
         }
     };
-    
     if (route.isLocal) {
+        RMLog(@"Call local route %@",routeURL);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSError *error = error;
-            NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:[route routeURLWithObject:nil]] options:NSDataReadingUncached error:&error];
+            NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:routeURL] options:NSDataReadingUncached error:&error];
             if (error) {
                 successBlock(nil,error);
             }
@@ -165,7 +178,8 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
         });
     }
     else {
-        [_networkingDelegate callAPI:[route routeURLWithObject:object] forHTTPMethod:route.HTTPMethod withParameters:parameters andCompletionBlock:successBlock];
+        RMLog(@"Call distant route %@",routeURL);
+        [_networkingDelegate callAPI:routeURL forHTTPMethod:route.HTTPMethod withParameters:parameters andCompletionBlock:successBlock];
     }
 }
 
