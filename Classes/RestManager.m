@@ -150,15 +150,17 @@ static NSNumber *sLogLevel = nil;
             if (completionBlock) completionBlock(routeIdentifier,nil,error);
         }
         else if(jsonObject) {
-            [_networkManagedObjectContext performBlock:^{
-                NSSet *routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
-                NSError *error = [_networkManagedObjectContext deleteOrphanedAndSave];
+            __block NSSet *routeBaseObjects =nil;
+            __block NSError *error=nil;
+            [_networkManagedObjectContext performBlockAndWait:^{
+                routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
+                error = [_networkManagedObjectContext deleteOrphanedAndSave];
                 NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                 RMILog(@"result %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
-                if (completionBlock) {
-                    completionBlock(routeIdentifier,routeBaseObjects,error);
-                }
             }];
+            if (completionBlock) {
+                completionBlock(routeIdentifier,routeBaseObjects,error);
+            }
         }
         else {
             error = [NSError errorWithDomain:RestManagerErrorDomain.copy code:RestManagerNilJSONObjectError userInfo:@{}];
