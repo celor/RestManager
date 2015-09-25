@@ -34,16 +34,16 @@
 #import "NSEntityDescription+RestMapping.h"
 
 #define RMILog(...) if([RestManager logLevel] >= RMLogLevelInfo) NSLog(__VA_ARGS__)
-#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelError) NSLog(__VA_ARGS__)
-#define RMELog(...) if([RestManager logLevel] >= RMLogLevelFull) NSLog(__VA_ARGS__)
+#define RMELog(...) if([RestManager logLevel] >= RMLogLevelError) NSLog(__VA_ARGS__)
+#define RMFLog(...) if([RestManager logLevel] >= RMLogLevelFull) NSLog(__VA_ARGS__)
 
 typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error);
 
 typedef enum : NSUInteger {
-    RMLogNone,
-    RMLogLevelInfo,
-    RMLogLevelError,
-    RMLogLevelFull,
+    RMLogNone = 0,
+    RMLogLevelInfo = 1,
+    RMLogLevelError = 2,
+    RMLogLevelFull = 3,
 } RMLogLevel;
 
 extern NSString const* RestManagerErrorDomain;
