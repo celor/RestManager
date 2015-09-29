@@ -73,7 +73,7 @@
 
 
 -(id)formattedValueForAttributeKey:(NSString *)attributeKey withJSONValue:(id)value {
-    NSAttributeDescription *attribute = self.entity.attributesByName[attributeKey];
+    NSAttributeDescription *attribute = [self attributes][attributeKey];
     id formattedValue = value;
     if (![formattedValue isKindOfClass:attribute.class]) {
         switch (attribute.attributeType) {
@@ -113,7 +113,7 @@
 
 
 -(id)formattedValueForRelationKey:(NSString *)relationKey withJSONValue:(id)value {
-    NSRelationshipDescription *relationship = self.entity.relationshipsByName[relationKey];
+    NSRelationshipDescription *relationship = [self relationships][relationKey];
     id formattedValue = nil;
     if (![value isKindOfClass:relationship.destinationEntity.class]) {
         NSSet *set = [relationship.destinationEntity insertObjectsFromJSONObject:value inContext:self.managedObjectContext ];
@@ -142,10 +142,41 @@
     return nil;
 }
 
+
+-(NSDictionary *)relationships {
+    
+    NSMutableDictionary *relationships = [NSMutableDictionary new];
+    NSEntityDescription *entity = self.entity;
+    while (entity) {
+        [relationships addEntriesFromDictionary:entity.relationshipsByName];
+        entity = entity.superentity;
+    }
+    return relationships.copy;
+}
+
+-(NSArray *)relationshipsKeys{
+    return [[self relationships] allKeys];
+}
+
+-(NSDictionary *)attributes {
+    
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
+    NSEntityDescription *entity = self.entity;
+    while (entity) {
+        [attributes addEntriesFromDictionary:entity.attributesByName];
+        entity = entity.superentity;
+    }
+    return attributes.copy;
+}
+-(NSArray *)attributesKeys
+{
+    return [[self attributes] allKeys];
+}
+
 -(id)formattedValueForKey:(NSString *)key withJSONValue:(id)value {
     
-    NSArray *relationshipsKeys = [self.entity.relationshipsByName allKeys];
-    NSArray *attributesKeys = [self.entity.attributesByName allKeys];
+    NSArray *relationshipsKeys = [self relationshipsKeys];
+    NSArray *attributesKeys = [self attributesKeys];
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     
     NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
