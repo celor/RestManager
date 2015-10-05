@@ -182,12 +182,16 @@
     NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
     if ([relationshipsKeys containsObject:propertyKey]) {
         id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
-        [propertyKeyedValues setObject:object forKey:propertyKey];
+        if (object) {
+            [propertyKeyedValues setObject:object forKey:propertyKey];
+        }
         RMFLog(@"relation %@(%@) value %@",propertyKey,key,object);
     }
     else if ([attributesKeys containsObject:propertyKey]){
         id object = [self formattedValueForAttributeKey:propertyKey withJSONValue:value];
-        [propertyKeyedValues setObject:object forKey:propertyKey];
+        if (object) {
+            [propertyKeyedValues setObject:object forKey:propertyKey];
+        }
         RMFLog(@"attribute %@(%@) value %@",propertyKey,key,object);
     }
     else {
