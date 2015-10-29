@@ -87,8 +87,13 @@
     NSMutableSet *set = [NSMutableSet new];
     if ([jsonObject isKindOfClass:[NSArray class]]) {
         [jsonObject enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL *stop) {
-            if (dic.allKeys.count > 0) {
-                [set addObject:[self insertObjectFromDictionary:dic inContext:managedObjectContext]];
+            if ([dic isKindOfClass:[NSDictionary class]]) {
+                if (dic.allKeys.count > 0) {
+                    [set addObject:[self insertObjectFromDictionary:dic inContext:managedObjectContext]];
+                }
+            }
+            else if ([jsonObject isKindOfClass:[NSNull class]]) {
+                [set addObject:dic];
             }
         }];
     }
