@@ -158,12 +158,12 @@ static NSNumber *sLogLevel = nil;
                     error = [_networkManagedObjectContext deleteOrphanedAndSave];
                     NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                     RMILog(@"result %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (completionBlock) {
+                            completionBlock(routeIdentifier,routeBaseObjects,error);
+                        }
+                    });
                 }];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (completionBlock) {
-                        completionBlock(routeIdentifier,routeBaseObjects,error);
-                    }
-                });
             });
         }
         else {
