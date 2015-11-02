@@ -151,13 +151,12 @@ static NSNumber *sLogLevel = nil;
         }
         else if(jsonObject) {
             __block NSSet *routeBaseObjects =nil;
-            __block NSError *error=nil;
             [_networkManagedObjectContext performBlockAndWait:^{
                 routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
-                error = [_networkManagedObjectContext deleteOrphanedAndSave];
                 NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                 RMILog(@"result %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
             }];
+            NSError *error = [_networkManagedObjectContext deleteOrphanedAndSave];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completionBlock) {
                     completionBlock(routeIdentifier,routeBaseObjects,error);
