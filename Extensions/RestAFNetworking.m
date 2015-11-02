@@ -34,7 +34,7 @@
 
 -(instancetype)initWithBaseURL:(NSURL *)url {
     self = [super initWithBaseURL:url];
-    self.completionQueue = dispatch_queue_create("rest.manager.afnetworking.parse", 0);
+    self.completionQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     return self;
 }
 
