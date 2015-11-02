@@ -153,7 +153,7 @@ static NSNumber *sLogLevel = nil;
             __block NSSet *routeBaseObjects =nil;
             __block NSError *error=nil;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                [_networkManagedObjectContext performBlockAndWait:^{
+//                [_networkManagedObjectContext performBlockAndWait:^{
                     routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
                     error = [_networkManagedObjectContext deleteOrphanedAndSave];
                     NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
@@ -163,7 +163,7 @@ static NSNumber *sLogLevel = nil;
                             completionBlock(routeIdentifier,routeBaseObjects,error);
                         }
                     });
-                }];
+//                }];
             });
         }
         else {
