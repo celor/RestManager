@@ -34,7 +34,7 @@
 
 -(instancetype)initWithBaseURL:(NSURL *)url {
     self = [super initWithBaseURL:url];
-    self.completionQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    self.completionQueue = dispatch_queue_create("com.rest.manager.parsequeue", DISPATCH_QUEUE_SERIAL);
     self.completionGroup = dispatch_group_create();
     return self;
 }

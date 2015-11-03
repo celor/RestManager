@@ -156,7 +156,7 @@ static NSNumber *sLogLevel = nil;
                 NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                 RMILog(@"result %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
             }];
-            NSError *error = [_networkManagedObjectContext deleteOrphanedAndSave];
+            [_networkManagedObjectContext deleteOrphanedAndSave];
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completionBlock) {
                     completionBlock(routeIdentifier,routeBaseObjects,error);
