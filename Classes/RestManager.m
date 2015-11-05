@@ -99,6 +99,7 @@ static NSNumber *sLogLevel = nil;
             }];
         }
     }];
+    [_networkManagedObjectContext save:nil];
 }
 
 -(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
