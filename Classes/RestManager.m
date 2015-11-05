@@ -66,6 +66,7 @@ NSString const* RestManagerErrorDomain = @"com.manager.rest.error.domain";
 {
     NSMutableDictionary *_restRoutes;
     NSURL *_baseURL;
+    BOOL _needCleanOrphaned;
 }
 
 @end
@@ -84,6 +85,22 @@ static NSNumber *sLogLevel = nil;
     sLogLevel = @(logLevel);
 }
 
+-(void)cleanOrphanedObjects {
+    NSArray *entities = _networkManagedObjectContext.persistentStoreCoordinator.managedObjectModel.entities;
+    [entities enumerateObjectsUsingBlock:^(NSEntityDescription * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSPredicate *predicate = [NSClassFromString(obj.managedObjectClassName) orphanedPredicate];
+        if (predicate) {
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:obj.name];
+            request.predicate = predicate;
+            NSArray *orphaned = [_networkManagedObjectContext executeFetchRequest:request error:nil];
+            [orphaned enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [_networkManagedObjectContext deleteObject:obj];
+            }];
+        }
+    }];
+}
+
 -(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
 {
     self = [super init];
@@ -94,6 +111,7 @@ static NSNumber *sLogLevel = nil;
         _globalParameters = nil;
         _networkManagedObjectContext = networkManagedObjectContext;
         _restRoutes = [NSMutableDictionary new];
+        _needCleanOrphaned = YES;
     }
     return self;
 }
@@ -152,6 +170,10 @@ static NSNumber *sLogLevel = nil;
         else if(jsonObject) {
             __block NSSet *routeBaseObjects =nil;
             [_networkManagedObjectContext performBlockAndWait:^{
+                if (_needCleanOrphaned) {
+                    _needCleanOrphaned = NO;
+                    [self cleanOrphanedObjects];
+                }
                 routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
                 NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                 RMILog(@"result %@ [network = %.4f, parse = %.4f]",routeURL,resultInterval,endInterval);
