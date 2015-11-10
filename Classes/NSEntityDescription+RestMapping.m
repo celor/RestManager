@@ -74,7 +74,6 @@
     
     NSFetchRequest *fetchRequest = [NSFetchRequest new];
     [fetchRequest setEntity:self];
-    [fetchRequest setFetchBatchSize:1];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];    
     
     NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:nil] firstObject];
