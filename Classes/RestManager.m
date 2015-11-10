@@ -177,7 +177,7 @@ static NSNumber *sLogLevel = nil;
                 }
                 routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
                 NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
-                RMILog(@"result %@ [network = %.4f, parse = %.4f, all = %.4f]",routeURL,resultInterval,endInterval-resultInterval,endInterval);
+                RMILog(@"result %@%@ [network = %.4f, parse = %.4f, all = %.4f]",_baseURL.absoluteString,routeURL,resultInterval,endInterval-resultInterval,endInterval);
                 [_networkManagedObjectContext deleteOrphanedAndSave];
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -191,7 +191,6 @@ static NSNumber *sLogLevel = nil;
         }
     };
     if (route.isLocal) {
-        RMILog(@"call local %@",routeURL);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSError *error = error;
             NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:routeURL] options:NSDataReadingUncached error:&error];
@@ -205,7 +204,6 @@ static NSNumber *sLogLevel = nil;
         });
     }
     else {
-        RMILog(@"call distant %@",routeURL);
         [_networkingDelegate callAPI:routeURL forHTTPMethod:route.HTTPMethod withParameters:parameters andCompletionBlock:successBlock];
     }
 }

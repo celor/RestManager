@@ -72,8 +72,10 @@
     }];
     NSAssert(identifier!=nil, @"Your dictionary need contain the identifier key %@ and it contain only keys %@.",identifierKey,[dictionary.allKeys componentsJoinedByString:@","]);
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:self.name];
-    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];
+    NSFetchRequest *fetchRequest = [NSFetchRequest new];
+    [fetchRequest setEntity:self];
+    [fetchRequest setFetchBatchSize:1];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];    
     
     NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:nil] firstObject];
     if (!object) {
