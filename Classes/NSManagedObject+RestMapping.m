@@ -84,34 +84,43 @@
             case NSDoubleAttributeType:
             case NSFloatAttributeType:
             case NSBooleanAttributeType:
-                if ([value isKindOfClass:[NSString class]]) {
-                    NSNumberFormatter *f = [NSNumberFormatter new];                    
-                    if ([value rangeOfString:@","].location!=NSNotFound) {
-                        [f setDecimalSeparator:@","];
-                    }
-                    else {
-                        [f setDecimalSeparator:@"."];
-                    }
-                    f.numberStyle = NSNumberFormatterDecimalStyle;
-                    formattedValue = [f numberFromString:value];
+            if ([value isKindOfClass:[NSString class]]) {
+                NSNumberFormatter *f = [NSNumberFormatter new];
+                if ([value rangeOfString:@","].location!=NSNotFound) {
+                    [f setDecimalSeparator:@","];
                 }
-                break;
+                else {
+                    [f setDecimalSeparator:@"."];
+                }
+                f.numberStyle = NSNumberFormatterDecimalStyle;
+                formattedValue = [f numberFromString:value];
+            }
+            else{
+                formattedValue = [NSNull null];
+            }
+            break;
             case NSStringAttributeType:
-                if ([value isKindOfClass:[NSNumber class]]) {
-                    formattedValue = [value stringValue];
-                }
-                break;
+            if ([value isKindOfClass:[NSNumber class]]) {
+                formattedValue = [value stringValue];
+            }
+            else{
+                formattedValue = [NSNull null];
+            }
+            break;
             case NSDateAttributeType:
-                if ([value isKindOfClass:[NSNumber class]]) {
-                    value = [value stringValue];
-                }
-                if ([value isKindOfClass:[NSString class]]) {
-                    formattedValue = [self dateFromString:value forPropertyNamed:attributeKey];
-                }
-                break;
-                
+            if ([value isKindOfClass:[NSNumber class]]) {
+                value = [value stringValue];
+            }
+            if ([value isKindOfClass:[NSString class]]) {
+                formattedValue = [self dateFromString:value forPropertyNamed:attributeKey];
+            }
+            else{
+                formattedValue = [NSNull null];
+            }
+            break;
+            
             default:
-                break;
+            break;
         }
     }
     return formattedValue;
@@ -213,8 +222,8 @@
 }
 
 
-         
-         
+
+
 -(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues {
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     [keyedValues enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
