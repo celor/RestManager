@@ -95,7 +95,7 @@
                 f.numberStyle = NSNumberFormatterDecimalStyle;
                 formattedValue = [f numberFromString:value];
             }
-            else{
+            else if(![value isKindOfClass:[NSNumber class]]){
                 formattedValue = [NSNull null];
             }
             break;
@@ -103,7 +103,7 @@
             if ([value isKindOfClass:[NSNumber class]]) {
                 formattedValue = [value stringValue];
             }
-            else{
+            else if(![value isKindOfClass:[NSString class]]){
                 formattedValue = [NSNull null];
             }
             break;
@@ -114,7 +114,7 @@
             if ([value isKindOfClass:[NSString class]]) {
                 formattedValue = [self dateFromString:value forPropertyNamed:attributeKey];
             }
-            else{
+            else {
                 formattedValue = [NSNull null];
             }
             break;
