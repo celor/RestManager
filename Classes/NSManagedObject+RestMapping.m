@@ -85,7 +85,13 @@
             case NSFloatAttributeType:
             case NSBooleanAttributeType:
                 if ([value isKindOfClass:[NSString class]]) {
-                    NSNumberFormatter *f = [NSNumberFormatter new];
+                    NSNumberFormatter *f = [NSNumberFormatter new];                    
+                    if ([value rangeOfString:@","].location!=NSNotFound) {
+                        [f setDecimalSeparator:@","];
+                    }
+                    else {
+                        [f setDecimalSeparator:@"."];
+                    }
                     f.numberStyle = NSNumberFormatterDecimalStyle;
                     formattedValue = [f numberFromString:value];
                 }
