@@ -193,7 +193,8 @@ static NSNumber *sLogLevel = nil;
     if (route.isLocal) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSError *error = error;
-            NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:routeURL] options:NSDataReadingUncached error:&error];
+            NSString *localRouteURL = [routeURL stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+            NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:localRouteURL] options:NSDataReadingUncached error:&error];
             if (error) {
                 successBlock(nil,error);
             }
