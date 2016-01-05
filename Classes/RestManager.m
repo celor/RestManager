@@ -142,6 +142,13 @@ static NSNumber *sLogLevel = nil;
     return nil;
 }
 
+-(NSError *)errorOnJSONObject:(id)jsonObject forRouteIdentifier:(id<NSCopying>)routeIdentifier
+                     forObject:(id)object
+            withCallParameters:(NSDictionary *)callParameters {
+    return nil;
+}
+
+
 -(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
                        forObject:(id)object
               withCallParameters:(NSDictionary *)callParameters
@@ -169,25 +176,32 @@ static NSNumber *sLogLevel = nil;
             if (completionBlock) completionBlock(routeIdentifier,nil,error);
         }
         else if(jsonObject) {
+            error = [self errorOnJSONObject:jsonObject forRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters];
             __block NSSet *routeBaseObjects =nil;
-            [_networkManagedObjectContext performBlockAndWait:^{
-                if (_needCleanOrphaned) {
-                    _needCleanOrphaned = NO;
-                    [self cleanOrphanedObjects];
-                }
-                routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
-                NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
-                RMILog(@"result %@%@ [network = %.4f, parse = %.4f, all = %.4f]",_baseURL.absoluteString,routeURL,resultInterval,endInterval-resultInterval,endInterval);
-                [_networkManagedObjectContext deleteOrphanedAndSave];
-            }];
+            if (!error) {
+                [_networkManagedObjectContext performBlockAndWait:^{
+                    if (_needCleanOrphaned) {
+                        _needCleanOrphaned = NO;
+                        [self cleanOrphanedObjects];
+                    }
+                    routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
+                    NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
+                    RMILog(@"result %@%@ [network = %.4f, parse = %.4f, all = %.4f]",_baseURL.absoluteString,routeURL,resultInterval,endInterval-resultInterval,endInterval);
+                    [_networkManagedObjectContext deleteOrphanedAndSave];
+                }];
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completionBlock) {
                     completionBlock(routeIdentifier,routeBaseObjects,error);
                 }
             });
+            
         }
         else {
             error = [NSError errorWithDomain:RestManagerErrorDomain.copy code:RestManagerNilJSONObjectError userInfo:@{}];
+            if (completionBlock) {
+                completionBlock(routeIdentifier,nil,error);
+            }
         }
     };
     if (route.isLocal) {
