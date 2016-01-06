@@ -139,6 +139,9 @@ static NSNumber *sLogLevel = nil;
         
         return [baseEntity insertObjectsFromJSONObject:jsonObject inContext:importContext];
     }
+    else if (jsonObject) {
+        return [NSSet setWithObject:jsonObject];
+    }
     return nil;
 }
 
