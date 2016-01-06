@@ -170,10 +170,10 @@ static NSNumber *sLogLevel = nil;
     NSString *routeURL = [route routeURLWithObject:object];
     NSTimeInterval startInterval = [NSDate timeIntervalSinceReferenceDate];
     
-    APICallCompletionBlock successBlock = ^(id jsonObject, NSError *error) {
+    APICallCompletionBlock successBlock = ^(id jsonObject, NSError *error, NSInteger statusCode) {
         NSTimeInterval resultInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
         if (error) {
-            if (completionBlock) completionBlock(routeIdentifier,nil,error);
+            if (completionBlock) completionBlock(routeIdentifier,nil,error,statusCode);
         }
         else if(jsonObject) {
             error = [self errorOnJSONObject:jsonObject forRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters];
@@ -192,7 +192,7 @@ static NSNumber *sLogLevel = nil;
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completionBlock) {
-                    completionBlock(routeIdentifier,routeBaseObjects,error);
+                    completionBlock(routeIdentifier,routeBaseObjects,error,statusCode);
                 }
             });
             
@@ -200,7 +200,7 @@ static NSNumber *sLogLevel = nil;
         else {
             error = [NSError errorWithDomain:RestManagerErrorDomain.copy code:RestManagerNilJSONObjectError userInfo:@{}];
             if (completionBlock) {
-                completionBlock(routeIdentifier,nil,error);
+                completionBlock(routeIdentifier,nil,error,statusCode);
             }
         }
     };
@@ -210,11 +210,11 @@ static NSNumber *sLogLevel = nil;
             NSString *localRouteURL = [routeURL stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
             NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:localRouteURL] options:NSDataReadingUncached error:&error];
             if (error) {
-                successBlock(nil,error);
+                successBlock(nil,error,404);
             }
             else {
                 id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-                successBlock(jsonObject,error);
+                successBlock(jsonObject,error,200);
             }
         });
     }

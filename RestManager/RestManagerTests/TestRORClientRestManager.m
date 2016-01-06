@@ -74,7 +74,7 @@ static NSString *const artists = @"artists";
     
     XCTAssertNotNil(_restManager,@"Rest manager cannot be nil");
     
-    [_restManager callAPIForRouteIdentifier:artists andCompletionBlock:^(id<NSCopying> routeIdentifier, NSSet *routeBaseObjects, NSError *error) {
+    [_restManager callAPIForRouteIdentifier:artists andCompletionBlock:^(id<NSCopying> routeIdentifier, NSSet *routeBaseObjects, NSError *error, NSInteger statusCode) {
         
         XCTAssertNil(error,@"An error occured. Verify that a server is launched. You need initialize and launch the Ruby On Rails server using rake db:setup and rails server command on folder Examples/serverApplication.");
         

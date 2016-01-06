@@ -42,11 +42,11 @@
 -(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters andCompletionBlock:(APICallCompletionBlock)completionBlock
 {
     void(^successBlock)(NSURLSessionDataTask *, id) = ^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(responseObject,nil);
+        completionBlock(responseObject,nil,((NSHTTPURLResponse *)task.response).statusCode);
     };
     
     void(^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError *error) {
-        completionBlock(nil,error);
+        completionBlock(nil,error,((NSHTTPURLResponse *)task.response).statusCode);
     };
     switch (method) {
         case RestHTTPMethodGET:
@@ -76,7 +76,7 @@
         case RestHTTPMethodHEAD:
         {
             [self HEAD:urlString parameters:parameters success:^(NSURLSessionDataTask *task) {
-                completionBlock(nil,nil);
+                completionBlock(nil,nil,((NSHTTPURLResponse *)task.response).statusCode);
             } failure:failureBlock];
         }
             break;
