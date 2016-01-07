@@ -157,6 +157,14 @@ static NSNumber *sLogLevel = nil;
               withCallParameters:(NSDictionary *)callParameters
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock
 {
+    [self callAPIForRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters multipartParameters:nil andCompletionBlock:completionBlock];
+}
+-(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
+                       forObject:(id)object
+              withCallParameters:(NSDictionary *)callParameters
+              multipartParameters:(NSDictionary *)multipartParameters
+              andCompletionBlock:(APIRouteCompletionBlock)completionBlock
+{
     NSAssert(_networkManagedObjectContext!=nil, @"Rest Manager need a mainManagedObjectContext to make the mapping");
     
     RestRoute *route = _restRoutes[routeIdentifier];
@@ -222,7 +230,12 @@ static NSNumber *sLogLevel = nil;
         });
     }
     else {
-        [_networkingDelegate callAPI:routeURL forHTTPMethod:route.HTTPMethod withParameters:parameters andCompletionBlock:successBlock];
+        if (multipartParameters) {
+            [_networkingDelegate callAPI:routeURL forHTTPMethod:route.HTTPMethod withParameters:parameters multipartParameters:multipartParameters andCompletionBlock:successBlock];
+        }
+        else {
+            [_networkingDelegate callAPI:routeURL forHTTPMethod:route.HTTPMethod withParameters:parameters andCompletionBlock:successBlock];
+        }
     }
 }
 

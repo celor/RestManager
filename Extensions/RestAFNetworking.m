@@ -89,6 +89,62 @@
     }
 }
 
+-(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters multipartParameters:(NSDictionary *)multipartParameters andCompletionBlock:(APICallCompletionBlock)completionBlock {
+    
+    void(^successBlock)(NSURLSessionDataTask *, id) = ^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(responseObject,nil,((NSHTTPURLResponse *)task.response).statusCode);
+    };
+    
+    void(^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(nil,error,((NSHTTPURLResponse *)task.response).statusCode);
+    };
+    switch (method) {
+        case RestHTTPMethodGET:
+        {
+            [self GET:urlString parameters:parameters success:successBlock failure:failureBlock];
+        }
+            break;
+            
+        case RestHTTPMethodPOST:
+        {
+            [self POST:urlString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                [multipartParameters enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                    if ([obj isKindOfClass:[NSData class]]) {
+                        [formData appendPartWithFormData:obj name:key];
+                    }
+                }];
+            } success:successBlock failure:failureBlock];
+        }
+            break;
+            
+        case RestHTTPMethodPUT:
+        {
+            [self PUT:urlString parameters:parameters success:successBlock failure:failureBlock];
+        }
+            break;
+            
+        case RestHTTPMethodDELETE:
+        {
+            [self DELETE:urlString parameters:parameters success:successBlock failure:failureBlock];
+        }
+            break;
+            
+        case RestHTTPMethodHEAD:
+        {
+            [self HEAD:urlString parameters:parameters success:^(NSURLSessionDataTask *task) {
+                completionBlock(nil,nil,((NSHTTPURLResponse *)task.response).statusCode);
+            } failure:failureBlock];
+        }
+            break;
+            
+        case RestHTTPMethodPATCH:
+        {
+            [self PATCH:urlString parameters:parameters success:successBlock failure:failureBlock];
+        }
+            break;
+    }
+}
+
 @end
 
 @implementation RestManager (RestAFNetworking)

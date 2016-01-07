@@ -94,6 +94,11 @@ typedef enum : NSUInteger {
               withCallParameters:(NSDictionary *)callParameters
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock;
 
+-(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
+                       forObject:(id)object
+              withCallParameters:(NSDictionary *)callParameters multipartParameters:(NSDictionary *)multipartParameters
+              andCompletionBlock:(APIRouteCompletionBlock)completionBlock;
+
 
 @end
 
@@ -122,5 +127,6 @@ typedef void(^APICallCompletionBlock)(id jsonObject, NSError *error, NSInteger s
  *                         (take an already parsed jsonObject -with NSJSONSerialisation or other- and an optional error)
  */
 -(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters andCompletionBlock:(APICallCompletionBlock)completionBlock;
+-(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters multipartParameters:(NSDictionary *)multipartParameters andCompletionBlock:(APICallCompletionBlock)completionBlock;
 
 @end
