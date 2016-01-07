@@ -110,7 +110,10 @@
             [self POST:urlString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                 [multipartParameters enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                     if ([obj isKindOfClass:[NSData class]]) {
-                        [formData appendPartWithFormData:obj name:key];
+                        [formData appendPartWithFileData:obj name:key fileName:nil mimeType:nil];
+                    }
+                    else if ([obj isKindOfClass:[NSDictionary class]]) {
+                        [formData appendPartWithFileData:obj[@"data"] name:key fileName:obj[@"name"] mimeType:obj[@"mime_type"]];
                     }
                 }];
             } success:successBlock failure:failureBlock];
