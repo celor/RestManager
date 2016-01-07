@@ -29,6 +29,44 @@
 
 #import "RestAFNetworking.h"
 
+@implementation NSData (MimeType)
+
+
+- (NSString *)mimeType{
+    uint8_t c;
+    [self getBytes:&c length:1];
+    
+    switch (c) {
+        case 0xFF:
+            return @"image/jpeg";
+            break;
+        case 0x89:
+            return @"image/png";
+            break;
+        case 0x47:
+            return @"image/gif";
+            break;
+        case 0x49:
+        case 0x4D:
+            return @"image/tiff";
+            break;
+        case 0x25:
+            return @"application/pdf";
+            break;
+        case 0xD0:
+            return @"application/vnd";
+            break;
+        case 0x46:
+            return @"text/plain";
+            break;
+        default:
+            return @"application/octet-stream";
+    }
+    return nil;
+}
+
+@end
+
 @implementation RestAFNetworking
 
 
@@ -88,7 +126,6 @@
             break;
     }
 }
-
 -(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters multipartParameters:(NSDictionary *)multipartParameters andCompletionBlock:(APICallCompletionBlock)completionBlock {
     
     void(^successBlock)(NSURLSessionDataTask *, id) = ^(NSURLSessionDataTask *task, id responseObject) {
@@ -110,7 +147,7 @@
             [self POST:urlString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                 [multipartParameters enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
                     if ([obj isKindOfClass:[NSData class]]) {
-                        [formData appendPartWithFileData:obj name:key fileName:nil mimeType:nil];
+                        [formData appendPartWithFileData:obj name:key fileName:key mimeType:[obj mimeType]];
                     }
                     else if ([obj isKindOfClass:[NSDictionary class]]) {
                         [formData appendPartWithFileData:obj[@"data"] name:key fileName:obj[@"name"] mimeType:obj[@"mime_type"]];
