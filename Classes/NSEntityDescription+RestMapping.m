@@ -84,6 +84,21 @@
     return object;
 }
 
+-(NSManagedObject *)insertObjectFromID:(id)objectID inContext:(NSManagedObjectContext *)managedObjectContext {
+    NSString *identifierKey = [self identifierKey];
+    NSAssert(identifierKey!=nil, @"You need specify an identifier key to %@ entity.",self.name);
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest new];
+    [fetchRequest setEntity:self];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,objectID]];
+    
+    NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:nil] firstObject];
+    if (!object) {
+        object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
+    }
+    return object;
+}
+
 -(NSSet *)insertObjectsFromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext {
     NSMutableSet *set = [NSMutableSet new];
     if ([jsonObject isKindOfClass:[NSArray class]]) {
