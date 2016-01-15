@@ -195,27 +195,32 @@
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     
     NSString *propertyKey = [self.entity propertyKeyForJSONKey:key];
-    if ([relationshipsKeys containsObject:propertyKey]) {
-        id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
-        if (object) {
-            [propertyKeyedValues setObject:object forKey:propertyKey];
-        }
-        RMFLog(@"relation %@(%@) value %@",propertyKey,key,object);
-    }
-    else if ([attributesKeys containsObject:propertyKey]){
-        id object = [self formattedValueForAttributeKey:propertyKey withJSONValue:value];
-        if (object) {
-            [propertyKeyedValues setObject:object forKey:propertyKey];
-        }
-        RMFLog(@"attribute %@(%@) value %@",propertyKey,key,object);
+    if ([value isKindOfClass:[NSNull class]]) {
+        [propertyKeyedValues setObject:value forKey:propertyKey];
     }
     else {
-        id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
-        if (newValues) {
-            [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
+        if ([relationshipsKeys containsObject:propertyKey]) {
+            id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
+            if (object) {
+                [propertyKeyedValues setObject:object forKey:propertyKey];
+            }
+            RMFLog(@"relation %@(%@) value %@",propertyKey,key,object);
+        }
+        else if ([attributesKeys containsObject:propertyKey]){
+            id object = [self formattedValueForAttributeKey:propertyKey withJSONValue:value];
+            if (object) {
+                [propertyKeyedValues setObject:object forKey:propertyKey];
+            }
+            RMFLog(@"attribute %@(%@) value %@",propertyKey,key,object);
         }
         else {
-            RMELog(@"unknown %@ - %@",propertyKey,value);
+            id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
+            if (newValues) {
+                [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
+            }
+            else {
+                RMELog(@"unknown %@ - %@",propertyKey,value);
+            }
         }
     }
     return propertyKeyedValues;
