@@ -118,6 +118,9 @@
             [set addObject:[self insertObjectFromDictionary:jsonObject inContext:managedObjectContext]];
         }
     }
+    else if ([jsonObject isKindOfClass:[NSString class]]||[jsonObject isKindOfClass:[NSNumber class]]) {
+        [set addObject:[self insertObjectFromID:jsonObject inContext:managedObjectContext]];
+    }
     else if ([jsonObject isKindOfClass:[NSNull class]]) {
         [set addObject:jsonObject];
     }
