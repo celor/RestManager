@@ -232,7 +232,7 @@
 -(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues {
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     [keyedValues enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
-        [propertyKeyedValues setValuesForKeysWithDictionary:[self formattedValueForKey:key withJSONValue:obj]];
+        [propertyKeyedValues addEntriesFromDictionary:[self formattedValueForKey:key withJSONValue:obj]];
     }];
     [self setValuesForKeysWithDictionary:propertyKeyedValues.copy];
 }
