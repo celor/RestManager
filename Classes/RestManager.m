@@ -184,7 +184,7 @@ static NSNumber *sLogLevel = nil;
     APICallCompletionBlock successBlock = ^(id jsonObject, NSError *error, NSInteger statusCode) {
         NSTimeInterval resultInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
         if (error) {
-            if (completionBlock) completionBlock(routeIdentifier,nil,error,statusCode);
+            if (completionBlock) completionBlock(routeIdentifier,jsonObject,error,statusCode);
         }
         else if(jsonObject) {
             error = [self errorOnJSONObject:jsonObject forRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters];
