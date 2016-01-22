@@ -209,7 +209,6 @@ static NSNumber *sLogLevel = nil;
             
         }
         else {
-            error = [NSError errorWithDomain:RestManagerErrorDomain.copy code:RestManagerNilJSONObjectError userInfo:@{}];
             if (completionBlock) {
                 completionBlock(routeIdentifier,nil,error,statusCode);
             }
