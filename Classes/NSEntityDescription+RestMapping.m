@@ -73,7 +73,7 @@
     NSAssert(identifier!=nil, @"Your dictionary need contain the identifier key %@ and it contain only keys %@.",identifierKey,[dictionary.allKeys componentsJoinedByString:@","]);
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:self.copy];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:self.name inManagedObjectContext:managedObjectContext]];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];    
     
     NSError *error = nil;
@@ -90,7 +90,7 @@
     NSAssert(identifierKey!=nil, @"You need specify an identifier key to %@ entity.",self.name);
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:self.copy];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:self.name inManagedObjectContext:managedObjectContext]];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,objectID]];
     NSError *error = nil;
     NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
