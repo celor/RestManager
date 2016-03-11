@@ -76,12 +76,15 @@
     [fetchRequest setEntity:[NSEntityDescription entityForName:self.name inManagedObjectContext:managedObjectContext]];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];    
     
-    NSError *error = nil;
-    NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
-    if (!object) {
-        object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
-    }
-    [object updateValuesForKeysWithDictionary:dictionary];
+    __block NSManagedObject *object = nil;
+    [managedObjectContext performBlockAndWait:^{
+        NSError *error = nil;
+        object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
+        if (!object) {
+            object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
+        }
+        [object updateValuesForKeysWithDictionary:dictionary];
+    }];
     return object;
 }
 
@@ -92,11 +95,15 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     [fetchRequest setEntity:[NSEntityDescription entityForName:self.name inManagedObjectContext:managedObjectContext]];
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,objectID]];
-    NSError *error = nil;
-    NSManagedObject *object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
-    if (!object) {
-        object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
-    }
+    
+    __block NSManagedObject *object = nil;
+    [managedObjectContext performBlockAndWait:^{
+        NSError *error = nil;
+        object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
+        if (!object) {
+            object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
+        }
+    }];
     return object;
 }
 
