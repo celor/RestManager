@@ -128,12 +128,16 @@
 }
 -(void)callAPI:(NSString *)urlString forHTTPMethod:(RestHTTPMethod)method withParameters:(NSDictionary *)parameters multipartParameters:(NSDictionary *)multipartParameters andCompletionBlock:(APICallCompletionBlock)completionBlock {
     
+    NSTimeInterval previousTimeoutInterval = self.requestSerializer.timeoutInterval;
+    self.requestSerializer.timeoutInterval = 0;
     void(^successBlock)(NSURLSessionDataTask *, id) = ^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(responseObject,nil,((NSHTTPURLResponse *)task.response).statusCode);
+        self.requestSerializer.timeoutInterval = previousTimeoutInterval;
     };
     
     void(^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError *error) {
         completionBlock(nil,error,((NSHTTPURLResponse *)task.response).statusCode);
+        self.requestSerializer.timeoutInterval = previousTimeoutInterval;
     };
     switch (method) {
         case RestHTTPMethodGET:
