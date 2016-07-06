@@ -472,6 +472,7 @@
 		0D91A7911B3D517B00511B2D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Vendor/AFNetworking/AFNetworking\"";
 				OTHER_LDFLAGS = "-ObjC";
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -482,6 +483,7 @@
 		0D91A7921B3D517B00511B2D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../Vendor/AFNetworking/AFNetworking\"";
 				OTHER_LDFLAGS = "-ObjC";
 				OTHER_LIBTOOLFLAGS = "$(OTHER_LDFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

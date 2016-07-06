@@ -32,21 +32,29 @@
 
 @implementation NSManagedObject (RestMapping)
 
-+(NSDictionary *)keysForJSONKeys
-{
-    return nil;
-}
-
 +(NSString *)propertyKeyForJSONKey:(NSString *)key
 {
-    NSDictionary *keys = [self keysForJSONKeys];
-    return keys[key]?:key;
+    if ([self conformsToProtocol:@protocol(RestMapping)]) {
+        id<RestMapping> mappingSelf = (id<RestMapping>)self;
+        NSDictionary *keys = [mappingSelf keysForJSONKeys];
+        if (keys[key]) {
+            key = keys[key];
+        }
+    }
+    return key;
 }
 
 +(NSArray *)JSONKeyForPropertyKey:(NSString *)key
 {
-    NSDictionary *keys = [self keysForJSONKeys];
-    return [keys allKeysForObject:key]?[@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]]:@[key];
+    if ([self conformsToProtocol:@protocol(RestMapping)]) {
+        id<RestMapping> mappingSelf = (id<RestMapping>)self;
+        NSDictionary *keys = [mappingSelf keysForJSONKeys];
+        if ([keys allKeysForObject:key]) {
+            return [@[key] arrayByAddingObjectsFromArray:[keys allKeysForObject:key]];
+        }
+    }
+    
+    return @[key];
 }
 
 +(NSString *)identifierKey

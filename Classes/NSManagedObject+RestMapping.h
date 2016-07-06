@@ -29,13 +29,17 @@
 
 #import <CoreData/CoreData.h>
 
+@protocol RestMapping <NSObject>
+
++(NSDictionary *)keysForJSONKeys;
+
+@end
+
 @interface NSManagedObject (RestMapping)
 
 +(NSString *)propertyKeyForJSONKey:(NSString *)key;
 
 +(NSArray *)JSONKeyForPropertyKey:(NSString *)key;
-
-+(NSDictionary *)keysForJSONKeys;
 
 +(NSString *)identifierKey;
 
