@@ -86,20 +86,25 @@ static NSNumber *sLogLevel = nil;
 }
 
 -(void)cleanOrphanedObjects {
-    NSArray *entities = _networkManagedObjectContext.persistentStoreCoordinator.managedObjectModel.entities;
-    [entities enumerateObjectsUsingBlock:^(NSEntityDescription * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    @try {
         
-        NSPredicate *predicate = [NSClassFromString(obj.managedObjectClassName) orphanedPredicate];
-        if (predicate) {
-            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:obj.name];
-            request.predicate = predicate;
-            NSArray *orphaned = [_networkManagedObjectContext executeFetchRequest:request error:nil];
-            [orphaned enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                [_networkManagedObjectContext deleteObject:obj];
-            }];
-        }
-    }];
-    [_networkManagedObjectContext save:nil];
+        NSArray *entities = _networkManagedObjectContext.persistentStoreCoordinator.managedObjectModel.entities;
+        [entities enumerateObjectsUsingBlock:^(NSEntityDescription * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            
+            NSPredicate *predicate = [NSClassFromString(obj.managedObjectClassName) orphanedPredicate];
+            if (predicate) {
+                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:obj.name];
+                request.predicate = predicate;
+                NSArray *orphaned = [_networkManagedObjectContext executeFetchRequest:request error:nil];
+                [orphaned enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [_networkManagedObjectContext deleteObject:obj];
+                }];
+            }
+        }];
+        [_networkManagedObjectContext save:nil];
+    } @catch (NSException *exception) {
+        RMELog(@"Exception on clean : %@",exception.description);
+    }
 }
 
 -(instancetype)initWithBaseURL:(NSURL *)baseURL networkManagedObjectContext:(NSManagedObjectContext *)networkManagedObjectContext andNetworkingDelegateClass:(Class)networkingDelegateClass
