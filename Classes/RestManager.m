@@ -103,7 +103,7 @@ static NSNumber *sLogLevel = nil;
         }];
         [_networkManagedObjectContext save:nil];
     } @catch (NSException *exception) {
-        RMELog(@"Exception on clean : %@",exception.description);
+        RMELog(@"Exception on clean : %@",exception.description); 
     }
 }
 

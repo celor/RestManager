@@ -77,14 +77,14 @@
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,identifier]];    
     
     __block NSManagedObject *object = nil;
-    [managedObjectContext performBlockAndWait:^{
+//    [managedObjectContext performBlockAndWait:^{
         NSError *error = nil;
         object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
         if (!object) {
             object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
         }
         [object updateValuesForKeysWithDictionary:dictionary];
-    }];
+//    }];
     return object;
 }
 
@@ -97,13 +97,13 @@
     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"%K == %@",identifierKey,objectID]];
     
     __block NSManagedObject *object = nil;
-    [managedObjectContext performBlockAndWait:^{
+//    [managedObjectContext performBlockAndWait:^{
         NSError *error = nil;
         object = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] firstObject];
         if (!object) {
             object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
         }
-    }];
+//    }];
     return object;
 }
 
