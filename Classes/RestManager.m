@@ -222,7 +222,38 @@ static NSNumber *sLogLevel = nil;
     if (route.isLocal) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             NSError *error = error;
-            NSString *localRouteURL = [routeURL stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+            NSString *localRouteURL = routeURL;
+            if ([localRouteURL hasPrefix:@"/"] && localRouteURL.length > 1) {
+                localRouteURL = [localRouteURL substringFromIndex:1];
+            }
+            switch (route.HTTPMethod) {
+                case RestHTTPMethodGET:
+                    localRouteURL = [@"GET" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                case RestHTTPMethodPOST:
+                    localRouteURL = [@"POST" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                case RestHTTPMethodPUT:
+                    localRouteURL = [@"PUT" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                case RestHTTPMethodDELETE:
+                    localRouteURL = [@"DELETE" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                case RestHTTPMethodHEAD:
+                    localRouteURL = [@"HEAD" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                case RestHTTPMethodPATCH:
+                    localRouteURL = [@"PATCH" stringByAppendingPathComponent:localRouteURL];
+                    break;
+                    
+                default:
+                    break;
+            }
             NSData *data = [NSData dataWithContentsOfURL:[_baseURL URLByAppendingPathComponent:localRouteURL] options:NSDataReadingUncached error:&error];
             if (error) {
                 successBlock(nil,error,404);

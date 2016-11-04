@@ -10,9 +10,9 @@
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "82EE558A-89D8-409C-ABDE-A4E2E06A832A",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "DD20A1A48C66B5213E0FEBB87A95EF51D6C6F3E8" : "RestManager\/Vendor\/AFNetworking",
+    "DD20A1A48C66B5213E0FEBB87A95EF51D6C6F3E8" : "RestManager\/Vendor\/AFNetworking\/",
     "45E4FE657A78EE4C3029D56A3C00E475C18414E6" : "RestManager\/Vendor\/ISO8601DateFormatter",
-    "B5A139926536DFAFC4679A5DC6B47DBBBCB5140B" : "RestManager"
+    "B5A139926536DFAFC4679A5DC6B47DBBBCB5140B" : "RestManager\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "RestManager",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
