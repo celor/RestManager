@@ -131,6 +131,9 @@
             break;
         }
     }
+    if ([formattedValue isKindOfClass:[NSString class]] && [formattedValue isEqualToString:@"null"]) {
+        formattedValue = [NSNull null];
+    }
     return formattedValue;
 }
 
