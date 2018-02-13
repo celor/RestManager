@@ -35,9 +35,9 @@
 
 -(NSString *)identifierKey;
 
--(NSManagedObject *)insertObjectFromDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)managedObjectContext;
+-(NSManagedObject *)insertObjectFromDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys;
 
--(NSSet *)insertObjectsFromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext;
+-(NSSet *)insertObjectsFromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys;
 
-+(NSSet *)insertObjectsForEntityForName:(NSString *)entityName fromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext;
++(NSSet *)insertObjectsForEntityForName:(NSString *)entityName fromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys;
 @end
