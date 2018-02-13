@@ -162,7 +162,7 @@ static NSNumber *sLogLevel = nil;
               withCallParameters:(NSDictionary *)callParameters
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock
 {
-    [self callAPIForRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters multipartParameters:nil andCompletionBlock:completionBlock];
+    [self callAPIForRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters multipartParameters:nil pagedKeys:nil andCompletionBlock:completionBlock];
 }
 -(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
                        forObject:(id)object
