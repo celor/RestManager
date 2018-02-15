@@ -127,7 +127,7 @@ static NSNumber *sLogLevel = nil;
     [_restRoutes setObject:route forKey:routeIdentifier];
 }
 
--(NSSet *)parseJsonObject:(id)jsonObject forRoute:(RestRoute *)route inContext:(NSManagedObjectContext *)importContext {
+-(NSSet *)parseJsonObject:(id)jsonObject forRoute:(RestRoute *)route inContext:(NSManagedObjectContext *)importContext withPagedKeys:(NSArray *)pagedKeys {
     if ([route subroutes]) {
         __block NSMutableSet *result = [NSMutableSet set];
         
@@ -135,14 +135,14 @@ static NSNumber *sLogLevel = nil;
         
         [[route subroutes] enumerateKeysAndObjectsUsingBlock:^(id key, RestRoute *obj, BOOL *stop) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            [result addObjectsFromArray:[[strongSelf parseJsonObject:jsonObject[key] forRoute:obj inContext:importContext] allObjects]];
+            [result addObjectsFromArray:[[strongSelf parseJsonObject:jsonObject[key] forRoute:obj inContext:importContext withPagedKeys:pagedKeys] allObjects]];
         }];
         return result;
     }
     if (route.baseEntityName && jsonObject) {
         NSEntityDescription *baseEntity = [NSEntityDescription entityForName:route.baseEntityName inManagedObjectContext:importContext];
         
-        return [baseEntity insertObjectsFromJSONObject:jsonObject inContext:importContext];
+        return [baseEntity insertObjectsFromJSONObject:jsonObject inContext:importContext withPagedKeys:pagedKeys];
     }
     else if (jsonObject) {
         return [NSSet setWithObject:jsonObject];
@@ -162,12 +162,13 @@ static NSNumber *sLogLevel = nil;
               withCallParameters:(NSDictionary *)callParameters
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock
 {
-    [self callAPIForRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters multipartParameters:nil andCompletionBlock:completionBlock];
+    [self callAPIForRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters multipartParameters:nil pagedKeys:nil andCompletionBlock:completionBlock];
 }
 -(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
                        forObject:(id)object
               withCallParameters:(NSDictionary *)callParameters
-              multipartParameters:(NSDictionary *)multipartParameters
+             multipartParameters:(NSDictionary *)multipartParameters
+                       pagedKeys:(NSArray *)pagedKeys
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock
 {
     NSAssert(_networkManagedObjectContext!=nil, @"Rest Manager need a mainManagedObjectContext to make the mapping");
@@ -200,7 +201,7 @@ static NSNumber *sLogLevel = nil;
                         _needCleanOrphaned = NO;
                         [self cleanOrphanedObjects];
                     }
-                    routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext];
+                    routeBaseObjects = [self parseJsonObject:jsonObject forRoute:route inContext:_networkManagedObjectContext withPagedKeys:pagedKeys];
                     NSTimeInterval endInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
                     RMILog(@"result %@%@ [network = %.4f, parse = %.4f, all = %.4f]",_baseURL.absoluteString,routeURL,resultInterval,endInterval-resultInterval,endInterval);
                     [_networkManagedObjectContext deleteOrphanedAndSave];

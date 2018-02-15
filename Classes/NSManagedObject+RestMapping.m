@@ -138,13 +138,19 @@
 }
 
 
--(id)formattedValueForRelationKey:(NSString *)relationKey withJSONValue:(id)value {
+-(id)formattedValueForRelationKey:(NSString *)relationKey withJSONValue:(id)value andPagedKeys:(NSArray *)pagedKeys {
     NSRelationshipDescription *relationship = [self relationships][relationKey];
     id formattedValue = nil;
     if (![value isKindOfClass:relationship.destinationEntity.class]) {
-        NSSet *set = [relationship.destinationEntity insertObjectsFromJSONObject:value inContext:self.managedObjectContext ];
+        NSSet *set = [relationship.destinationEntity insertObjectsFromJSONObject:value inContext:self.managedObjectContext withPagedKeys:pagedKeys];
         if (relationship.toMany) {
-            formattedValue = set;
+            if ([pagedKeys containsObject:relationKey]) {
+                NSSet *previousValues = [self valueForKey:relationKey];
+                formattedValue = [previousValues setByAddingObjectsFromSet:set];
+            }
+            else {
+                formattedValue = set;
+            }
         }
         else {
             formattedValue = [[set allObjects] firstObject];
@@ -156,13 +162,13 @@
     return formattedValue;
 }
 
--(id)formattedValuesForUnknownKey:(NSString *)unknownKey withJSONValue:(id)value
+-(id)formattedValuesForUnknownKey:(NSString *)unknownKey withJSONValue:(id)value andPagedKeys:(NSArray *)pagedKeys
 {
     if ([value isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
         [value enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             NSString *newKey = [@[unknownKey,key] componentsJoinedByString:@"."];
-            [propertyKeyedValues setValuesForKeysWithDictionary:[self formattedValueForKey:newKey withJSONValue:obj]];
+            [propertyKeyedValues setValuesForKeysWithDictionary:[self formattedValueForKey:newKey withJSONValue:obj andPagedKeys:pagedKeys]];
         }];
     }
     return nil;
@@ -199,7 +205,7 @@
     return [[self attributes] allKeys];
 }
 
--(id)formattedValueForKey:(NSString *)key withJSONValue:(id)value {
+-(id)formattedValueForKey:(NSString *)key withJSONValue:(id)value andPagedKeys:(NSArray *)pagedKeys{
     
     NSArray *relationshipsKeys = [self relationshipsKeys];
     NSArray *attributesKeys = [self attributesKeys];
@@ -211,7 +217,7 @@
     }
     else {
         if ([relationshipsKeys containsObject:propertyKey]) {
-            id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value];
+            id object = [self formattedValueForRelationKey:propertyKey withJSONValue:value andPagedKeys:pagedKeys];
             if (object) {
                 [propertyKeyedValues setObject:object forKey:propertyKey];
             }
@@ -225,7 +231,7 @@
             RMFLog(@"attribute %@(%@) value %@",propertyKey,key,object);
         }
         else {
-            id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value];
+            id newValues = [self formattedValuesForUnknownKey:propertyKey withJSONValue:value andPagedKeys:pagedKeys];
             if (newValues) {
                 [propertyKeyedValues setValuesForKeysWithDictionary:newValues];
             }
@@ -237,13 +243,10 @@
     return propertyKeyedValues;
 }
 
-
-
-
--(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues {
+-(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues withPagedKeys:(NSArray *)pagedKeys{
     NSMutableDictionary *propertyKeyedValues = [NSMutableDictionary new];
     [keyedValues enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
-        [propertyKeyedValues addEntriesFromDictionary:[self formattedValueForKey:key withJSONValue:obj]];
+        [propertyKeyedValues addEntriesFromDictionary:[self formattedValueForKey:key withJSONValue:obj andPagedKeys:pagedKeys]];
     }];
     [self setValuesForKeysWithDictionary:propertyKeyedValues.copy];
 }

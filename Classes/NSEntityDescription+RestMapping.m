@@ -61,7 +61,7 @@
 }
 
 
--(NSManagedObject *)insertObjectFromDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)managedObjectContext {
+-(NSManagedObject *)insertObjectFromDictionary:(NSDictionary *)dictionary inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys{
     NSString *identifierKey = [self identifierKey];
     NSAssert(identifierKey!=nil, @"You need specify an identifier key to %@ entity.",self.name);
     NSArray *JSONKeys = [self JSONKeyForPropertyKey:identifierKey];
@@ -83,7 +83,7 @@
         if (!object) {
             object = [NSEntityDescription insertNewObjectForEntityForName:self.name inManagedObjectContext:managedObjectContext];
         }
-        [object updateValuesForKeysWithDictionary:dictionary];
+        [object updateValuesForKeysWithDictionary:dictionary withPagedKeys:pagedKeys];
 //    }];
     return object;
 }
@@ -107,13 +107,13 @@
     return object;
 }
 
--(NSSet *)insertObjectsFromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext {
+-(NSSet *)insertObjectsFromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys {
     NSMutableSet *set = [NSMutableSet new];
     if ([jsonObject isKindOfClass:[NSArray class]]) {
         [jsonObject enumerateObjectsUsingBlock:^(NSDictionary *dic, NSUInteger idx, BOOL *stop) {
             if ([dic isKindOfClass:[NSDictionary class]]) {
                 if (dic.allKeys.count > 0) {
-                    [set addObject:[self insertObjectFromDictionary:dic inContext:managedObjectContext]];
+                    [set addObject:[self insertObjectFromDictionary:dic inContext:managedObjectContext withPagedKeys:pagedKeys]];
                 }
             }
             else if ([jsonObject isKindOfClass:[NSNull class]]) {
@@ -123,7 +123,7 @@
     }
     else if ([jsonObject isKindOfClass:[NSDictionary class]]){
         if ([jsonObject allKeys].count > 0) {
-            [set addObject:[self insertObjectFromDictionary:jsonObject inContext:managedObjectContext]];
+            [set addObject:[self insertObjectFromDictionary:jsonObject inContext:managedObjectContext withPagedKeys:pagedKeys]];
         }
     }
     else if ([jsonObject isKindOfClass:[NSString class]]||[jsonObject isKindOfClass:[NSNumber class]]) {
@@ -138,9 +138,9 @@
     return set;
 }
 
-+(NSSet *)insertObjectsForEntityForName:(NSString *)entityName fromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext
++(NSSet *)insertObjectsForEntityForName:(NSString *)entityName fromJSONObject:(id)jsonObject inContext:(NSManagedObjectContext *)managedObjectContext withPagedKeys:(NSArray *)pagedKeys
 {
-    return [[self entityForName:entityName inManagedObjectContext:managedObjectContext] insertObjectsFromJSONObject:jsonObject inContext:managedObjectContext];
+    return [[self entityForName:entityName inManagedObjectContext:managedObjectContext] insertObjectsFromJSONObject:jsonObject inContext:managedObjectContext withPagedKeys:pagedKeys];
 }
 
 @end

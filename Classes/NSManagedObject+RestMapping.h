@@ -45,9 +45,9 @@
 
 -(NSDate *)dateFromString:(NSString *)stringDate forPropertyNamed:(NSString *)propertyName;
 
--(id)formattedValueForAttributeKey:(NSString *)attributeKey withJSONValue:(id)value;
+-(id)formattedValueForAttributeKey:(NSString *)attributeKey withJSONValue:(id)value andPagedKeys:(NSArray *)pagedKeys;
 
--(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues;
+-(void)updateValuesForKeysWithDictionary:(NSDictionary *)keyedValues withPagedKeys:(NSArray *)pagedKeys;
 
 +(NSPredicate *)orphanedPredicate;
 
