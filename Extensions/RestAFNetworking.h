@@ -26,7 +26,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 //
-#import "AFNetworking.h"
+@import AFNetworking;
+//#import "AFNetworking.h"
 #import "RestManager.h"
 
 @interface RestAFNetworking : AFHTTPSessionManager<RestNetworkingDelegate>
