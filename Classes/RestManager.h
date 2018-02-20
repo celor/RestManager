@@ -97,6 +97,11 @@ typedef enum : NSUInteger {
 -(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
                        forObject:(id)object
               withCallParameters:(NSDictionary *)callParameters multipartParameters:(NSDictionary *)multipartParameters
+              andCompletionBlock:(APIRouteCompletionBlock)completionBlock;
+
+-(void)callAPIForRouteIdentifier:(id<NSCopying>)routeIdentifier
+                       forObject:(id)object
+              withCallParameters:(NSDictionary *)callParameters multipartParameters:(NSDictionary *)multipartParameters
                        pagedKeys:(NSArray *)pagedKeys
               andCompletionBlock:(APIRouteCompletionBlock)completionBlock;
 
