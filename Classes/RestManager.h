@@ -37,7 +37,7 @@
 #define RMELog(...) if([RestManager logLevel] >= RMLogLevelError) NSLog(__VA_ARGS__)
 #define RMFLog(...) if([RestManager logLevel] >= RMLogLevelFull) NSLog(__VA_ARGS__)
 
-typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error, NSInteger statusCode);
+typedef void(^APIRouteCompletionBlock)(id<NSCopying> routeIdentifier,NSSet *routeBaseObjects, NSError *error, NSInteger statusCode,id jsonObject);
 
 typedef enum : NSUInteger {
     RMLogNone = 0,

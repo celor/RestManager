@@ -199,7 +199,7 @@ static NSNumber *sLogLevel = nil;
     APICallCompletionBlock successBlock = ^(id jsonObject, NSError *error, NSInteger statusCode) {
         NSTimeInterval resultInterval = [NSDate timeIntervalSinceReferenceDate]-startInterval;
         if (error) {
-            if (completionBlock) completionBlock(routeIdentifier,jsonObject,error,statusCode);
+            if (completionBlock) completionBlock(routeIdentifier,jsonObject,error,statusCode,jsonObject);
         }
         else if(jsonObject) {
             error = [self errorOnJSONObject:jsonObject forRouteIdentifier:routeIdentifier forObject:object withCallParameters:callParameters];
@@ -218,14 +218,14 @@ static NSNumber *sLogLevel = nil;
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completionBlock) {
-                    completionBlock(routeIdentifier,routeBaseObjects,error,statusCode);
+                    completionBlock(routeIdentifier,routeBaseObjects,error,statusCode,jsonObject);
                 }
             });
             
         }
         else {
             if (completionBlock) {
-                completionBlock(routeIdentifier,nil,error,statusCode);
+                completionBlock(routeIdentifier,nil,error,statusCode,jsonObject);
             }
         }
     };
